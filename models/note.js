@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { Content } from "next/font/google";
 
 const NoteSchema = new mongoose.Schema({
   title: {
@@ -7,7 +6,7 @@ const NoteSchema = new mongoose.Schema({
     required: true,
     maxLength: 100,
   },
-  Content: {
+  content: {
     type: String,
     required: true,
     maxLength: 2000,
