@@ -1,14 +1,16 @@
-"use client"
+"use client";
 
 import { useState } from "react";
+import toast from "react-hot-toast";
 
-const NotesClient = () => {
+const NotesClient = ({ initialNotes }) => {
+  const [notes, setNotes] = useState(initialNotes);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
 
   const createNote = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     if (!title.trim() || !content.trim()) return;
 
     setLoading(true);
@@ -19,10 +21,17 @@ const NotesClient = () => {
         body: JSON.stringify({ title, content }),
       });
       const result = await response.json();
-      console.log(result);
+      if (result.success) {
+        setNotes([result.data, ...notes]);
+        toast.success("Notes created successfully")
+        setTitle("");
+        setContent("");
+      }
       setLoading(false);
     } catch (error) {
-      console.log("Error creating note:", error);
+      console.error("Error creating note:", error);
+      toast.error("Something went wrong")
+
     }
   };
 
@@ -57,6 +66,47 @@ const NotesClient = () => {
           </button>
         </div>
       </form>
+
+      <div className="space-y-4">
+        <h2 className="text-xl font-semibold">Your Notes({notes.length})</h2>
+        {notes.length === 0 ? (
+          <p className="text-gray-500">
+            No Notes Yet. Create Your First Note Above
+          </p>
+        ) : (
+          notes.map((note) => (
+            <div key={note._id} className="bg-white p-6 rounded-lg shadow-md">
+              <div className="flex justify-between items-start mb-2">
+                <h2 className="text-lg font-semibold">{note.title}</h2>
+                <div className="flex gap-2">
+                  <button className="text-blue-500 hover:text-blue-700 text-sm">
+                    Edit
+                  </button>
+                  <button className="text-red-500 hover:text-red-700 text-sm">
+                    Delete
+                  </button>
+                </div>
+              </div>
+              <p className="text-gray-700 mb-2">{note.content}</p>
+              <p>
+                Created at:{" "}
+                {new Date(note.createdAt).toLocaleString("en-IN", {
+                  timeZone: "Asia/Kolkata",
+                })}
+              </p>
+              {new Date(note.createdAt).getTime() !==
+                new Date(note.updatedAt).getTime() && (
+                <p className="text-xs text-gray-400">
+                  Updated:{" "}
+                  {new Date(note.updatedAt).toLocaleString("en-IN", {
+                    timeZone: "Asia/Kolkata",
+                  })}
+                </p>
+              )}
+            </div>
+          ))
+        )}
+      </div>
     </div>
   );
 };
