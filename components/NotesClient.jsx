@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import { useState } from "react";
 
@@ -8,17 +8,17 @@ const NotesClient = () => {
   const [loading, setLoading] = useState(false);
 
   const createNote = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     if (!title.trim() || !content.trim()) return;
 
     setLoading(true);
     try {
-      const responce = await fetch("/api/notes", {
+      const response = await fetch("/api/notes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title, content }),
       });
-      const result = await responce.json();
+      const result = await response.json();
       console.log(result);
       setLoading(false);
     } catch (error) {
@@ -43,7 +43,6 @@ const NotesClient = () => {
           />
           <textarea
             required
-            type="text"
             placeholder="Note Content"
             value={content}
             onChange={(e) => setContent(e.target.value)}
