@@ -23,17 +23,35 @@ const NotesClient = ({ initialNotes }) => {
       const result = await response.json();
       if (result.success) {
         setNotes([result.data, ...notes]);
-        toast.success("Notes created successfully")
+        toast.success("Notes created successfully");
         setTitle("");
         setContent("");
       }
       setLoading(false);
     } catch (error) {
       console.error("Error creating note:", error);
-      toast.error("Something went wrong")
-
+      toast.error("Something went wrong");
     }
   };
+
+  const deleteNote = async (id) => {
+  try {
+    const response = await fetch(`/api/notes/${id}`, {
+      method: "DELETE",
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      setNotes(notes.filter((note) => note._id !== id));
+      toast.success("Note Deleted Successfully");
+    }
+  } catch (error) {
+    console.error("Error deleting note:", error);
+    toast.error("Something Went Wrong");
+  }
+};
+
 
   return (
     <div className="space-y-6">
@@ -82,7 +100,10 @@ const NotesClient = ({ initialNotes }) => {
                   <button className="text-blue-500 hover:text-blue-700 text-sm">
                     Edit
                   </button>
-                  <button className="text-red-500 hover:text-red-700 text-sm">
+                  <button
+                    onClick={() => deleteNote(note._id)}
+                    className="text-red-500 hover:text-red-700 text-sm"
+                  >
                     Delete
                   </button>
                 </div>
