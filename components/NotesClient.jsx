@@ -86,6 +86,7 @@ const NotesClient = ({ initialNotes }) => {
       if (result.success) {
         toast.success("Notes Updated Successfully");
         setNotes(notes.map((note) => (note._id === id ? result.data : note)));
+        // “Notes list me jis note ka _id given id ke equal hai usko backend se aaye updated data se replace kar do aur baaki sab notes ko unchanged rehne do”
         setEditingId(null);
         setEditTitale("");
         setEditContent("");
