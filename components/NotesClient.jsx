@@ -4,35 +4,45 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 
 const NotesClient = ({ initialNotes }) => {
-  const [notes, setNotes] = useState(initialNotes);
+  const [notes, setNotes] = useState(initialNotes); // app.js thelke props ar through pathano data state variable aa store kora holo
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false); 
   // states for eaditing notes
   const [editingId, setEditingId] = useState(null);
   const [editTitale, setEditTitale] = useState("");
   const [editContent, setEditContent] = useState("");
 
   const createNote = async (e) => {
-    e.preventDefault();
-    if (!title.trim() || !content.trim()) return;
+    e.preventDefault(); // form ar default behavior change kore dai.
+    if (!title.trim() || !content.trim()) return; // jodi title ar content aa kono data na thake then note create hbe na okhan theke return hoye jba.
 
-    setLoading(true);
+    setLoading(true); // note create ar process start howar sathe sathe setLoading(true) hoye jbe
     try {
-      const response = await fetch("/api/notes", {
-        method: "POST",
+      const response = await fetch("/api/notes", { // fetch akta http request pathanor functio, "/api/notes" ata route ar end point jai route aa amra data send kori.
+        method: "POST", // POST ar mane server aa notun data send kore notun note banano.
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, content }),
+        // headers = extra info jta request ar sathe server aa pathano hoi.
+        // Content = ekta standerd http header jta server k bole request body kon formate aa ache.
+        // application/json = ata through bojha jai data JSON formate aa pathano ho6he.
+        body: JSON.stringify({ title, content }), 
+        // body = actual data k=jta server aa pathano hobe.
+        // JSON.stringify = s object k JSON string aa convert kore.
+        // { title, content } = js ae object
       });
-      const result = await response.json();
-      if (result.success) {
+      const result = await response.json(); // server ar responce k JSON theke JS object aa convert kore.
+      if (result.success) { // result = backend theke asa responce, success = backend ar flag(true/false)
         setNotes([result.data, ...notes]);
+        // setNotes → React ar state update function
+        // notes → already existing notes array
+        // result.data → notun note ja backend theke asache.
         toast.success("Notes created successfully");
         setTitle("");
         setContent("");
       }
       setLoading(false);
     } catch (error) {
+      // jdi error ase then agulo run hbe
       console.error("Error creating note:", error);
       toast.error("Something went wrong");
     }
