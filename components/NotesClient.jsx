@@ -7,7 +7,7 @@ const NotesClient = ({ initialNotes }) => {
   const [notes, setNotes] = useState(initialNotes); // app.js thelke props ar through pathano data state variable aa store kora holo
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(false);
   // states for eaditing notes
   const [editingId, setEditingId] = useState(null);
   const [editTitale, setEditTitale] = useState("");
@@ -19,19 +19,21 @@ const NotesClient = ({ initialNotes }) => {
 
     setLoading(true); // note create ar process start howar sathe sathe setLoading(true) hoye jbe
     try {
-      const response = await fetch("/api/notes", { // fetch akta http request pathanor functio, "/api/notes" ata route ar end point jai route aa amra data send kori.
+      const response = await fetch("/api/notes", {
+        // fetch akta http request pathanor functio, "/api/notes" ata route ar end point jai route aa amra data send kori.
         method: "POST", // POST ar mane server aa notun data send kore notun note banano.
         headers: { "Content-Type": "application/json" },
         // headers = extra info jta request ar sathe server aa pathano hoi.
         // Content = ekta standerd http header jta server k bole request body kon formate aa ache.
         // application/json = ata through bojha jai data JSON formate aa pathano ho6he.
-        body: JSON.stringify({ title, content }), 
+        body: JSON.stringify({ title, content }),
         // body = actual data k=jta server aa pathano hobe.
         // JSON.stringify = s object k JSON string aa convert kore.
         // { title, content } = js ae object
       });
       const result = await response.json(); // server ar responce k JSON theke JS object aa convert kore.
-      if (result.success) { // result = backend theke asa responce, success = backend ar flag(true/false)
+      if (result.success) {
+        // result = backend theke asa responce, success = backend ar flag(true/false)
         setNotes([result.data, ...notes]);
         // setNotes → React ar state update function
         // notes → already existing notes array
@@ -51,16 +53,21 @@ const NotesClient = ({ initialNotes }) => {
   const deleteNote = async (id) => {
     try {
       const response = await fetch(`/api/notes/${id}`, {
-        method: "DELETE",
+        // fetch akta http request pathanor functio, "/api/notes/${id}" ata route ar end point jai route aa amra data send kori.
+        method: "DELETE", // DELETE ar mane server theke data delete kora.
       });
-
-      const result = await response.json();
-
+      const result = await response.json(); // server ar responce k JSON theke JS object aa convert kore.
       if (result.success) {
+        // result = backend theke asa responce, success = backend ar flag(true/false)
         setNotes(notes.filter((note) => note._id !== id));
+        // notes = array of multiple objects.
+        // filter() = array ar protek element k check kore ar j element dulo consition follow/true kore tader rakhe
+        // note._id = mongoBD ar note model ar _id
+        // id = j note delete hbe setar id
         toast.success("Note Deleted Successfully");
       }
     } catch (error) {
+      // jdi error ase then agulo run hbe
       console.error("Error deleting note:", error);
       toast.error("Something Went Wrong");
     }
